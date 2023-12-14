@@ -9,10 +9,15 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatIntelliJLaf;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.table.DefaultTableModel;
 /**
  *
@@ -43,10 +48,10 @@ public class Main extends javax.swing.JFrame {
         btnRequestSend = new javax.swing.JButton();
         jTabbedPane2 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnParamAdd = new javax.swing.JButton();
+        btnParamRemove = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblParams = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
         jComboBox2 = new javax.swing.JComboBox<>();
         jPanel7 = new javax.swing.JPanel();
@@ -77,6 +82,21 @@ public class Main extends javax.swing.JFrame {
         cmbRequestType.setSelectedIndex(1);
 
         txtRequestURL.setText("http://192.168.1.35:5005/rest/execute");
+        txtRequestURL.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+            }
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
+                txtRequestURLInputMethodTextChanged(evt);
+            }
+        });
+        txtRequestURL.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtRequestURLKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtRequestURLKeyTyped(evt);
+            }
+        });
 
         btnRequestSend.setText("Send");
         btnRequestSend.addActionListener(new java.awt.event.ActionListener() {
@@ -85,34 +105,47 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("Add");
-        jButton1.setMaximumSize(new java.awt.Dimension(75, 22));
-        jButton1.setMinimumSize(new java.awt.Dimension(75, 22));
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnParamAdd.setText("Add");
+        btnParamAdd.setMaximumSize(new java.awt.Dimension(75, 22));
+        btnParamAdd.setMinimumSize(new java.awt.Dimension(75, 22));
+        btnParamAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnParamAddActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Remove");
-        jButton2.setMaximumSize(new java.awt.Dimension(75, 22));
-        jButton2.setMinimumSize(new java.awt.Dimension(75, 22));
-        jButton2.setPreferredSize(new java.awt.Dimension(75, 22));
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnParamRemove.setText("Remove");
+        btnParamRemove.setMaximumSize(new java.awt.Dimension(75, 22));
+        btnParamRemove.setMinimumSize(new java.awt.Dimension(75, 22));
+        btnParamRemove.setPreferredSize(new java.awt.Dimension(75, 22));
+        btnParamRemove.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnParamRemoveActionPerformed(evt);
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblParams.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null}
+
             },
             new String [] {
                 "Key", "Value"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        tblParams.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                tblParamsPropertyChange(evt);
+            }
+        });
+        tblParams.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tblParamsKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                tblParamsKeyTyped(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tblParams);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -121,8 +154,8 @@ public class Main extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnParamRemove, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnParamAdd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 655, Short.MAX_VALUE)
                 .addContainerGap())
@@ -134,9 +167,9 @@ public class Main extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnParamAdd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnParamRemove, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 103, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -383,13 +416,15 @@ public class Main extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void btnParamAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnParamAddActionPerformed
+        DefaultTableModel model = (DefaultTableModel) tblParams.getModel();
+        model.addRow(new Object[]{});
+    }//GEN-LAST:event_btnParamAddActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void btnParamRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnParamRemoveActionPerformed
+        DefaultTableModel model = (DefaultTableModel) tblParams.getModel();
+        model.removeRow(tblParams.getSelectedRow());
+    }//GEN-LAST:event_btnParamRemoveActionPerformed
 
     private void jComboBox2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox2ItemStateChanged
         // TODO add your handling code here:
@@ -448,6 +483,30 @@ public class Main extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) tblHeaders.getModel();
         model.removeRow(tblHeaders.getSelectedRow());
     }//GEN-LAST:event_btnHeaderRemoveActionPerformed
+
+    private void txtRequestURLInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_txtRequestURLInputMethodTextChanged
+        
+    }//GEN-LAST:event_txtRequestURLInputMethodTextChanged
+
+    private void txtRequestURLKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtRequestURLKeyTyped
+
+    }//GEN-LAST:event_txtRequestURLKeyTyped
+
+    private void txtRequestURLKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtRequestURLKeyReleased
+        updateParamsInTable();
+    }//GEN-LAST:event_txtRequestURLKeyReleased
+
+    private void tblParamsKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblParamsKeyReleased
+        updateParamsInURL();
+    }//GEN-LAST:event_tblParamsKeyReleased
+
+    private void tblParamsPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_tblParamsPropertyChange
+        updateParamsInURL();
+    }//GEN-LAST:event_tblParamsPropertyChange
+
+    private void tblParamsKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblParamsKeyTyped
+
+    }//GEN-LAST:event_tblParamsKeyTyped
     
     /**
      * @param args the command line arguments
@@ -493,11 +552,11 @@ public class Main extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnHeaderAdd;
     private javax.swing.JButton btnHeaderRemove;
+    private javax.swing.JButton btnParamAdd;
+    private javax.swing.JButton btnParamRemove;
     private javax.swing.JButton btnRequestSend;
     private javax.swing.JComboBox<String> cmbBodyType;
     private javax.swing.JComboBox<String> cmbRequestType;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
@@ -517,10 +576,52 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTable tblHeaders;
+    private javax.swing.JTable tblParams;
     private javax.swing.JTextArea txtBodyRequest;
     private javax.swing.JTextField txtRequestURL;
     // End of variables declaration//GEN-END:variables
+
+    private void updateParamsInTable() {
+        String oldURL = txtRequestURL.getText();
+        Pattern pattern = Pattern.compile("^[^?#]+\\?([^#]+)");
+        Matcher matcher = pattern.matcher(oldURL);
+        DefaultTableModel model = (DefaultTableModel) tblParams.getModel();
+
+        while (matcher.find()) {
+            String[] params = matcher.group(1).split("&");
+            List<String[]> tableArray = new ArrayList<>();
+            for (int i = 0; i < params.length; i++) {
+                String[] param = params[i].split("=");
+                tableArray.add(param);
+            }
+            for (int i = model.getRowCount() - 1; i >= 0 ; i--) {
+                model.removeRow(i);
+            }
+            for (String[] array : tableArray) {
+                model.addRow(array);
+            }
+        }
+    }
+
+    private void updateParamsInURL() {
+        String oldURL = txtRequestURL.getText();
+        Pattern pattern = Pattern.compile("^([^?#]+)");
+        Matcher matcher = pattern.matcher(oldURL);
+
+        while (matcher.find()) {
+            String hostAddress = matcher.group(1);
+            DefaultTableModel model = (DefaultTableModel) tblParams.getModel();
+
+            List<String> params = new ArrayList<>();
+            for (int i = 0 ; i < model.getRowCount() ; i++) {
+                if (model.getValueAt(i, 0) != null &&  model.getValueAt(i, 1) != null){
+                    params.add(model.getValueAt(i, 0) + "=" + model.getValueAt(i, 1));
+                }
+            }
+            if (params.size() > 0 ) hostAddress += "?" + String.join("&", params);
+            txtRequestURL.setText(hostAddress);
+        }
+    }
 }

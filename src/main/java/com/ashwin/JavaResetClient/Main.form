@@ -110,6 +110,11 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="http://192.168.1.35:5005/rest/execute"/>
       </Properties>
+      <Events>
+        <EventHandler event="inputMethodTextChanged" listener="java.awt.event.InputMethodListener" parameters="java.awt.event.InputMethodEvent" handler="txtRequestURLInputMethodTextChanged"/>
+        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtRequestURLKeyReleased"/>
+        <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtRequestURLKeyTyped"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnRequestSend">
       <Properties>
@@ -138,8 +143,8 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="jButton2" max="32767" attributes="0"/>
-                          <Component id="jButton1" max="32767" attributes="0"/>
+                          <Component id="btnParamRemove" max="32767" attributes="0"/>
+                          <Component id="btnParamAdd" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jScrollPane1" pref="655" max="32767" attributes="0"/>
@@ -154,9 +159,9 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jScrollPane1" pref="0" max="32767" attributes="0"/>
                           <Group type="102" attributes="0">
-                              <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnParamAdd" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jButton2" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnParamRemove" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="0" pref="103" max="32767" attributes="0"/>
                           </Group>
                       </Group>
@@ -166,7 +171,7 @@
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Component class="javax.swing.JButton" name="jButton1">
+            <Component class="javax.swing.JButton" name="btnParamAdd">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Add"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -177,10 +182,10 @@
                 </Property>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnParamAddActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JButton" name="jButton2">
+            <Component class="javax.swing.JButton" name="btnParamRemove">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Remove"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -194,7 +199,7 @@
                 </Property>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnParamRemoveActionPerformed"/>
               </Events>
             </Component>
             <Container class="javax.swing.JScrollPane" name="jScrollPane1">
@@ -204,10 +209,10 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
               <SubComponents>
-                <Component class="javax.swing.JTable" name="jTable1">
+                <Component class="javax.swing.JTable" name="tblParams">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                      <Table columnCount="2" rowCount="1">
+                      <Table columnCount="2" rowCount="0">
                         <Column editable="true" title="Key" type="java.lang.Object"/>
                         <Column editable="true" title="Value" type="java.lang.Object"/>
                       </Table>
@@ -230,6 +235,11 @@
                       <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
                     </Property>
                   </Properties>
+                  <Events>
+                    <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="tblParamsPropertyChange"/>
+                    <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="tblParamsKeyReleased"/>
+                    <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="tblParamsKeyTyped"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>
