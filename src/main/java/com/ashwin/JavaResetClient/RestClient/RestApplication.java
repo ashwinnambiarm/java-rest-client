@@ -4,15 +4,15 @@
  */
 package com.ashwin.JavaResetClient.RestClient;
 
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.net.ProxySelector;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
-import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -48,14 +48,29 @@ public class RestApplication {
         try {
             HttpRequest req = builder.build();
 
-            HttpResponse<String> response = HttpClient
+            HttpResponse<String> res = HttpClient
                     .newBuilder()
                     .proxy(ProxySelector.getDefault())
                     .build()
                     .send(req, HttpResponse.BodyHandlers.ofString());
             
-            System.out.println(response.body());
-            return null;
+            Response response = new Response();
+            response.setBody(res.body());
+            
+            Map<String, List<String>> headers = res.headers().map();
+            Map<String, String> responseHeaders = new HashMap<>();
+            
+            for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
+                String key = entry.getKey();
+                String val = entry.getValue().get(0);
+                responseHeaders.put(key, val);
+                if (key.toLowerCase().equals("content-type")) {
+                    String contentType = val.split("/")[1];
+                    response.setBodyType(contentType.toUpperCase());
+                }
+            }
+            response.setHeaders(responseHeaders);
+            return response;
         } catch (IOException | InterruptedException ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
